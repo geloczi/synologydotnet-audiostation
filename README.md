@@ -33,3 +33,9 @@ var response = await audioStation.ListArtistsAsync(100, 0);
 foreach(var artist in response.Data.Artists)
     Console.WriteLine(artist.Name);
 ```
+
+## SynAudio - Desktop App based on this library
+
+It is a *Synology Audio Station* like desktop application (WPF) for Windows.
+
+[SynAudio on GitHub](https://github.com/geloczigeri/synologydotnet-audiostation-wpf)
