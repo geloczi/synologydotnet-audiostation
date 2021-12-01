@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Version>0.3.0</Version>
+		<AssemblyVersion>0.3.0.0</AssemblyVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="SynologyDotNet.Core" Version="0.3.0" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<PackageProjectUrl>https://github.com/geloczigeri/synologydotnet-audiostation</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/geloczigeri/synologydotnet-audiostation</RepositoryUrl>
+		<Description>Synology AudioStation client based on SynologyDotNet.Core.</Description>
+		<PackageTags>synology;dsm;audiostation;synologydotnet;synologydotnet-audiostation</PackageTags>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Copyright>Copyright © Gergő Gelóczi 2021</Copyright>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
+
+	
+
+</Project>
