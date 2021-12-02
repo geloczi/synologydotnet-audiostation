@@ -4,9 +4,7 @@ Synology AudioStation client for .NET.
 * Requires [SynologyDotNet.Core](https://www.nuget.org/packages/SynologyDotNet.Core/)
 * Targets **.NET Standard 2.0**
 
-## NuGet package
-
-[NuGet package availabe here](https://www.nuget.org/packages/SynologyDotNet.AudioStation/)
+## [NuGet package](https://www.nuget.org/packages/SynologyDotNet.AudioStation/)
 ```
 Install-Package SynologyDotNet.AudioStation
 ```
@@ -34,8 +32,8 @@ foreach(var artist in response.Data.Artists)
     Console.WriteLine(artist.Name);
 ```
 
-## SynAudio - Desktop App based on this library
+## [SynAudio](https://github.com/geloczigeri/synologydotnet-audiostation-wpf) - Desktop App based on this library
 
 It is a *Synology Audio Station* like desktop application (WPF) for Windows.
 
-[SynAudio on GitHub](https://github.com/geloczigeri/synologydotnet-audiostation-wpf)
+[Open SynAudio on GitHub](https://github.com/geloczigeri/synologydotnet-audiostation-wpf)
