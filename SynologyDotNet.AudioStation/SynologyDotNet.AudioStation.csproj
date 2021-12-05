@@ -2,34 +2,37 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>0.3.0</Version>
-		<AssemblyVersion>0.3.0.0</AssemblyVersion>
+		<Configurations>Debug;Release;Local</Configurations>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="SynologyDotNet.Core" Version="0.3.0" />
-	</ItemGroup>
+	<!-- General -->
+	<PropertyGroup>
+		<Product>SynologyDotNet.AudioStation</Product>
+		<Version>0.3.0</Version>
+		<Description>SynologyDotNet.AudioStation</Description>
+		<RepositoryUrl>https://github.com/geloczigeri/synologydotnet-audiostation</RepositoryUrl>
+		<Authors>Gergő Gelóczi</Authors>
+		<Copyright>Copyright © Gergő Gelóczi 2021</Copyright>
+	</PropertyGroup>
 
+	<!-- Packaging -->
 	<PropertyGroup>
 		<PackageProjectUrl>https://github.com/geloczigeri/synologydotnet-audiostation</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/geloczigeri/synologydotnet-audiostation</RepositoryUrl>
-		<Description>Synology AudioStation client based on SynologyDotNet.Core.</Description>
-		<PackageTags>synology;dsm;audiostation;synologydotnet;synologydotnet-audiostation</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<Copyright>Copyright © Gergő Gelóczi 2021</Copyright>
+		<PackageTags>synology;dsm;audiostation;synologydotnet;synologydotnet-audiostation</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
-	
+
+	<!-- ReadMe -->
 	<ItemGroup>
 		<None Include="..\README.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-	
 	<ItemGroup>
 		<None Update="README.md">
 			<Pack>True</Pack>
@@ -37,11 +40,31 @@
 		</None>
 	</ItemGroup>
 
+	<!-- Release mode -->
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 	</PropertyGroup>
 
-	
+	<!-- Local configuration uses project references -->
+	<Choose>
+		<When Condition=" '$(Configuration)'=='Local' ">
+			<PropertyGroup>
+				<DefineConstants>DEBUG;TRACE</DefineConstants>
+			</PropertyGroup>
+			<ItemGroup>
+				<ProjectReference Include="..\..\synologydotnet-core\SynologyDotNet.Core\SynologyDotNet.Core.csproj" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<PackageReference Include="SynologyDotNet.Core" Version="0.3.0" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
 
 </Project>
