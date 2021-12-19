@@ -92,6 +92,16 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
+        public async Task ListComposers()
+        {
+            var response = await AudioStation.ListComposersAsync(TestPageSize, 0);
+            Assert.IsTrue(response.Success);
+            Assert.IsTrue(response.Data.Total > 0);
+            Assert.IsTrue(response.Data.Composers.Length > 0);
+            Assert.IsTrue(response.Data.Composers.Length <= TestPageSize);
+        }
+
+        [TestMethod]
         public async Task ListSongs_All() => await ListSongs(SongQueryAdditional.All);
         [TestMethod]
         public async Task ListSongs_None() => await ListSongs(SongQueryAdditional.None);

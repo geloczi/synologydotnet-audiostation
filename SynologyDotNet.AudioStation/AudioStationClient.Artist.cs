@@ -15,7 +15,7 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ApiListRessponse<ArtistList>> ListArtistsAsync(int limit, int offset)
         {
-            return await Client.QueryListAsync<ApiListRessponse<ArtistList>>(SYNO_AudioStation_Artist, "list", limit, offset, GetLibraryArg()); //personal
+            return await Client.QueryListAsync<ApiListRessponse<ArtistList>>(SYNO_AudioStation_Artist, "list", limit, offset, GetLibraryArg());
         }
 
         /// <summary>

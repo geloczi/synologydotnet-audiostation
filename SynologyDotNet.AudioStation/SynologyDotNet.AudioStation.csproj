@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<Configurations>Debug;Release;Local</Configurations>
+		<NoWarn>1701;1702;1591</NoWarn>
 	</PropertyGroup>
 
 	<!-- General -->
@@ -41,14 +42,15 @@
 	</ItemGroup>
 
 	<!-- Release mode -->
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
+		<NoWarn>1701;1702;1591</NoWarn>
 	</PropertyGroup>
 
 	<!-- Local configuration uses project references -->
 	<Choose>
-		<When Condition=" '$(Configuration)'=='Local' ">
+		<When Condition="'$(Configuration)'=='Local'">
 			<PropertyGroup>
 				<DefineConstants>DEBUG;TRACE</DefineConstants>
 			</PropertyGroup>
