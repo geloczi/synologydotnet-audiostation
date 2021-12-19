@@ -30,7 +30,7 @@ namespace SynologyDotNet.AudioStation
         /// <param name="id">The identifier.</param>
         /// <param name="additionalFields">Additional fields to load.</param>
         /// <returns></returns>
-        public async Task<ApiDataResponse<Playlist>> GetPlaylistAsync(int limit, int offset, string id, SongQueryAdditional additionalFields)
+        public async Task<ApiDataResponse<Playlist>> GetPlaylistAsync(int limit, int offset, string id, SongQueryAdditional additionalFields = SongQueryAdditional.None)
         {
             var args = new List<(string, object)>();
             args.Add(GetLibraryArg());
@@ -58,6 +58,34 @@ namespace SynologyDotNet.AudioStation
 
             var playlists = await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(SYNO_AudioStation_Playlist, "getinfo", limit, offset, args.ToArray());
             return new ApiDataResponse<Playlist>(playlists, playlists.Data?.Playlists?.FirstOrDefault() ?? default);
+        }
+
+        public async Task<ApiResponse> AddSongsToPlaylist(string id, params string[] songIds)
+        {
+            return await Client.QueryObjectAsync<ApiResponse>(SYNO_AudioStation_Playlist, "updatesongs",
+                ("id", id),
+                ("offset", -1),
+                ("limit", 0),
+                ("songs", string.Join(",", songIds))
+            );
+        }
+
+        /// <summary>
+        /// Removes the selected song range from the specified playlist.
+        /// The Playlist API does NOT support removing songs by ID directly, you must query the playlist first.
+        /// </summary>
+        /// <param name="id">The identifier of the Playlist.</param>
+        /// <param name="startIndex">The index of the first song to be deleted.</param>
+        /// <param name="count">The count of songs to be removed from start index.</param>
+        public async Task<ApiResponse> RemoveSongsFromPlaylist(string id, int startIndex, int count)
+        {
+            // The Playlist API does NOT support removing songs by ID, it is using the "offset" and "limit" parameters to define the range to remove.
+            return await Client.QueryObjectAsync<ApiResponse>(SYNO_AudioStation_Playlist, "updatesongs",
+                ("id", id),
+                ("offset", startIndex),
+                ("limit", count),
+                ("songs", string.Empty)
+            );
         }
     }
 }

@@ -363,7 +363,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListPlaylists()
+        public async Task Playlist_List()
         {
             var response = await AudioStation.ListPlaylistsAsync(TestPageSize, 0);
             Assert.IsTrue(response.Success);
@@ -372,9 +372,9 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task GetPlaylist()
+        public async Task Playlist_Get()
         {
-            var playlist = await AudioStation.GetPlaylistAsync(TestPageSize, 0, TestPlaylist.ID, SongQueryAdditional.None);
+            var playlist = await AudioStation.GetPlaylistAsync(TestPageSize, 0, TestPlaylist.ID);
             Assert.IsTrue(playlist.Success);
             Assert.IsFalse(string.IsNullOrEmpty(playlist.Data.ID));
             Assert.IsTrue(playlist.Data.Additional.Songs.Length > 0);
@@ -385,7 +385,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task GetPlaylist_SongDetails()
+        public async Task Playlist_GetWithSongDetails()
         {
             var playlist = await AudioStation.GetPlaylistAsync(TestPageSize, 0, TestPlaylist.ID, SongQueryAdditional.All);
             Assert.IsTrue(playlist.Success);
@@ -395,6 +395,28 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
             {
                 AssertSong(song, SongQueryAdditional.All);
             }
+        }
+
+        [TestMethod]
+        public async Task Playlist_AddAndRemoveSong()
+        {
+            // Add test song to playlist
+            var response = await AudioStation.AddSongsToPlaylist(TestPlaylist.ID, TestSong.ID);
+            Assert.IsTrue(response.Success);
+
+            // Get all songs on playlist
+            var playlist = await AudioStation.GetPlaylistAsync(TestPageSize, 0, TestPlaylist.ID);
+            Assert.IsTrue(playlist.Success);
+            Assert.IsTrue(playlist.Data.Additional.Songs.Any(x => x.ID == TestSong.ID));
+
+            // Remove the test song from the playlist
+            var testSongPlaylistIndex = playlist.Data.Additional.Songs.Select((song, index) => (song, index)).First(x => x.song.ID == TestSong.ID).index;
+            response = await AudioStation.RemoveSongsFromPlaylist(TestPlaylist.ID, testSongPlaylistIndex, 1);
+
+            // Check
+            playlist = await AudioStation.GetPlaylistAsync(TestPageSize, 0, TestPlaylist.ID);
+            Assert.IsTrue(playlist.Success);
+            Assert.IsFalse(playlist.Data.Additional.Songs.Any(x => x.ID == TestSong.ID));
         }
 
         [TestMethod]
