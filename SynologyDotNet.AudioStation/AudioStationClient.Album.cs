@@ -23,7 +23,7 @@ namespace SynologyDotNet.AudioStation
             args.Add(GetLibraryArg());
             if (!string.IsNullOrWhiteSpace(artist))
                 args.Add(("artist", artist));
-
+            
             return await Client.QueryListAsync<ApiListRessponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset, args.ToArray());
         }
 
