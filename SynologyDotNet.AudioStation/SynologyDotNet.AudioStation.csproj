@@ -8,7 +8,7 @@
 	<!-- General -->
 	<PropertyGroup>
 		<Product>SynologyDotNet.AudioStation</Product>
-		<Version>0.4.1</Version>
+		<Version>0.4.0</Version>
 		<Description>SynologyDotNet.AudioStation</Description>
 		<RepositoryUrl>https://github.com/geloczigeri/synologydotnet-audiostation</RepositoryUrl>
 		<Authors>Gergő Gelóczi</Authors>
