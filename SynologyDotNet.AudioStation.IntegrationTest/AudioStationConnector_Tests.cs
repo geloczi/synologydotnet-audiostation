@@ -61,7 +61,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListArtists()
+        public async Task Artist_List()
         {
             var response = await AudioStation.ListArtistsAsync(TestPageSize, 0);
             Assert.IsTrue(response.Success);
@@ -71,7 +71,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListAlbums()
+        public async Task Album_List()
         {
             var response = await AudioStation.ListAlbumsAsync(TestPageSize, 0);
             Assert.IsTrue(response.Success);
@@ -81,7 +81,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListLatestAlbums()
+        public async Task Album_ListLatest()
         {
             var response = await AudioStation.ListAlbumsAsync(TestPageSize, 0, null, (AlbumQueryParameter.sort_by, AlbumSortBy.Time), (AlbumQueryParameter.sort_direction, SortDirection.Descending));
             Assert.IsTrue(response.Success);
@@ -92,7 +92,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListComposers()
+        public async Task Composer_List()
         {
             var response = await AudioStation.ListComposersAsync(TestPageSize, 0);
             Assert.IsTrue(response.Success);
@@ -102,7 +102,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListGenres()
+        public async Task Genre_List()
         {
             var response = await AudioStation.ListGenresAsync(TestPageSize, 0);
             Assert.IsTrue(response.Success);
@@ -112,15 +112,16 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListSongs_All() => await ListSongs(SongQueryAdditional.All);
+        public async Task Song_ListWithAll() => await ListSongs(SongQueryAdditional.All);
         [TestMethod]
-        public async Task ListSongs_None() => await ListSongs(SongQueryAdditional.None);
+        public async Task Song_List() => await ListSongs(SongQueryAdditional.None);
         [TestMethod]
-        public async Task ListSongs_song_audio() => await ListSongs(SongQueryAdditional.song_audio);
+        public async Task Song_ListWith_song_audio() => await ListSongs(SongQueryAdditional.song_audio);
         [TestMethod]
-        public async Task ListSongs_song_rating() => await ListSongs(SongQueryAdditional.song_rating);
+        public async Task Song_ListWith_song_rating() => await ListSongs(SongQueryAdditional.song_rating);
         [TestMethod]
-        public async Task ListSongs_song_tag() => await ListSongs(SongQueryAdditional.song_tag);
+        public async Task Song_ListWith_song_tag() => await ListSongs(SongQueryAdditional.song_tag);
+        
         private async Task ListSongs(SongQueryAdditional queryAdditional)
         {
             var response = await AudioStation.ListSongsAsync(TestPageSize, 0, queryAdditional);
@@ -143,7 +144,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListSongsPagination()
+        public async Task Song_ListWithPagination()
         {
             var bigPage = await AudioStation.ListSongsAsync(100, 0, SongQueryAdditional.None);
             AssertIListResult(bigPage);
@@ -172,7 +173,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListArtistAlbumSongs()
+        public async Task Song_FilterByArtistAlbum()
         {
             var response = await AudioStation.ListSongsAsync(TestPageSize, 0, SongQueryAdditional.All,
                 (SongQueryParameter.artist, Config.TestArtist),
@@ -221,7 +222,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task ListFolders()
+        public async Task Folder_List()
         {
             // Get top level folders
             var response = await AudioStation.ListFoldersAsync(TestPageSize, 0);
@@ -240,7 +241,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task GetArtistCover()
+        public async Task Artist_GetCover()
         {
             var response = await AudioStation.GetArtistCoverAsync(Config.TestArtist);
             Assert.IsFalse(response is null);
@@ -250,7 +251,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task GetArtistCover_NotFound()
+        public async Task Artist_GetCover_NotFound()
         {
             Exception exception = null;
             try
@@ -268,7 +269,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task GetAlbumCover()
+        public async Task Album_GetCover()
         {
             var response = await AudioStation.GetAlbumCoverAsync(Config.TestArtist, Config.TestAlbum);
             Assert.IsFalse(response is null);
@@ -278,7 +279,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public async Task GetAlbumCover_NotFound()
+        public async Task Album_GetCover_NotFound()
         {
             Exception exception = null;
             try
@@ -296,24 +297,32 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
-        public void TestStreamSong_MP3_320Kbps()
+        public async Task Song_GetById()
         {
-            TestStreamSongInternal(TranscodeMode.MP3_320Kbps, "audio/mpeg");
+            var response = await AudioStation.GetSongByIdAsync(TestSong.ID);
+            Assert.IsTrue(response.Data.Songs.Length > 0);
+            Assert.AreEqual(response.Data.Songs[0].ID, TestSong.ID);
         }
 
         [TestMethod]
-        public void TestStreamSong_WAV()
+        public void Song_Stream_MP3_320Kbps()
         {
-            TestStreamSongInternal(TranscodeMode.WAV, "audio/x-wav");
+            Song_StreamInternal(TranscodeMode.MP3_320Kbps, "audio/mpeg");
         }
 
         [TestMethod]
-        public void TestStreamSong_None()
+        public void Song_Stream_WAV()
         {
-            TestStreamSongInternal(TranscodeMode.None, null);
+            Song_StreamInternal(TranscodeMode.WAV, "audio/x-wav");
         }
 
-        private void TestStreamSongInternal(TranscodeMode transcodeMode, string mediaType)
+        [TestMethod]
+        public void Song_Stream_Original()
+        {
+            Song_StreamInternal(TranscodeMode.None, null);
+        }
+
+        private void Song_StreamInternal(TranscodeMode transcodeMode, string mediaType)
         {
             var tokenSource = new CancellationTokenSource();
             var downloadTask = AudioStation.StreamSongAsync(
@@ -352,14 +361,6 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
             response = await AudioStation.SearchAsync(Config.TestSongTitle);
             Assert.IsNotNull(response.Data.Songs);
             Assert.IsTrue(response.Data.SongTotal > 0);
-        }
-
-        [TestMethod]
-        public async Task GetSongById()
-        {
-            var response = await AudioStation.GetSongByIdAsync(TestSong.ID);
-            Assert.IsTrue(response.Data.Songs.Length > 0);
-            Assert.AreEqual(response.Data.Songs[0].ID, TestSong.ID);
         }
 
         [TestMethod]
