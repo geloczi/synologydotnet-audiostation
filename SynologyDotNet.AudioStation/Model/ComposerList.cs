@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
-using SynologyDotNet.AudioStation.Model;
 using SynologyDotNet.Core.Responses;
 
-namespace SynologyDotNet.AudioStation
+namespace SynologyDotNet.AudioStation.Model
 {
     public class ComposerList : ListResponseBase
     {

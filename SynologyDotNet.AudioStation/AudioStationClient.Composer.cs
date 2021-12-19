@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using SynologyDotNet.AudioStation.Model;
 using SynologyDotNet.Core.Responses;
 
 namespace SynologyDotNet.AudioStation
@@ -7,7 +8,9 @@ namespace SynologyDotNet.AudioStation
     {
         public async Task<ApiListRessponse<ComposerList>> ListComposersAsync(int limit, int offset)
         {
-            return await Client.QueryListAsync<ApiListRessponse<ComposerList>>(SYNO_AudioStation_Composer, "list", limit, offset, GetLibraryArg());
+            return await Client.QueryListAsync<ApiListRessponse<ComposerList>>(SYNO_AudioStation_Composer, "list", limit, offset, 
+                GetLibraryArg(), 
+                ("additional", "avg_rating"));
         }
     }
 }

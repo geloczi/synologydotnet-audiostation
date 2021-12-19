@@ -69,8 +69,10 @@ namespace SynologyDotNet.AudioStation.Model
     {
         [JsonProperty("song_audio")]
         public SongAudio Audio { get; set; }
+
         [JsonProperty("song_rating")]
         public SongRating Rating { get; set; }
+
         [JsonProperty("song_tag")]
         public SongTag Tag { get; set; }
     }
@@ -79,16 +81,22 @@ namespace SynologyDotNet.AudioStation.Model
     {
         [JsonProperty("bitrate")]
         public int Bitrate { get; set; }
+
         [JsonProperty("channel")]
         public int Channels { get; set; }
+
         [JsonProperty("codec")]
         public string Codec { get; set; }
+
         [JsonProperty("container")]
         public string Container { get; set; }
+
         [JsonProperty("duration")]
         public int Duration { get; set; }
+
         [JsonProperty("filesize")]
         public int FileSize { get; set; }
+
         [JsonProperty("frequency")]
         public int Frequency { get; set; }
     }
@@ -103,28 +111,40 @@ namespace SynologyDotNet.AudioStation.Model
     {
         [JsonProperty("album")]
         public string Album { get; set; }
+
         [JsonProperty("album_artist")]
         public string AlbumArtist { get; set; }
+
         [JsonProperty("artist")]
         public string Artist { get; set; }
+
         [JsonProperty("comment")]
         public string Comment { get; set; }
+
         [JsonProperty("composer")]
         public string Composer { get; set; }
+
         [JsonProperty("disc")]
         public int Disc { get; set; }
+
         [JsonProperty("genre")]
         public string Genre { get; set; }
+
         [JsonProperty("rg_album_gain")]
         public string AlbumGain { get; set; }
+
         [JsonProperty("rg_album_peak")]
         public string AlbumPeak { get; set; }
+
         [JsonProperty("rg_track_gain")]
         public string TrackGain { get; set; }
+
         [JsonProperty("rg_track_peak")]
         public string TrackPeak { get; set; }
+
         [JsonProperty("track")]
         public int Track { get; set; }
+
         [JsonProperty("year")]
         public int Year { get; set; }
     }

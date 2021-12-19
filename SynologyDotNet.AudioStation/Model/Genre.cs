@@ -2,18 +2,18 @@
 
 namespace SynologyDotNet.AudioStation.Model
 {
-    public class Composer
+    public class Genre
     {
         [JsonProperty("name")]
         public string Name { get; set; }
 
         [JsonProperty("additional")]
-        public ComposerAdditional Additional { get; set; }
+        public GenreAdditional Additional { get; set; }
 
         public override string ToString() => Name ?? base.ToString();
     }
 
-    public struct ComposerAdditional
+    public struct GenreAdditional
     {
         [JsonProperty("avg_rating")]
         public AvgRating AverageRating { get; set; }
