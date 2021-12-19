@@ -16,7 +16,8 @@ namespace SynologyDotNet.AudioStation
         public async Task<ApiListRessponse<ArtistList>> ListArtistsAsync(int limit, int offset)
         {
             return await Client.QueryListAsync<ApiListRessponse<ArtistList>>(SYNO_AudioStation_Artist, "list", limit, offset, 
-                GetLibraryArg());
+                GetLibraryArg(),
+                ("additional", "avg_rating"));
         }
 
         /// <summary>
@@ -30,6 +31,7 @@ namespace SynologyDotNet.AudioStation
         {
             return await Client.QueryListAsync<ApiListRessponse<ArtistList>>(SYNO_AudioStation_Artist, "list", limit, offset, 
                 GetLibraryArg(),
+                ("additional", "avg_rating"),
                 ("genre", genre));
         }
 
