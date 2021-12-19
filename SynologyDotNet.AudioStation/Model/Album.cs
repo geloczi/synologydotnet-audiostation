@@ -2,11 +2,12 @@
 
 namespace SynologyDotNet.AudioStation.Model
 {
-    public enum AlbumQueryParameters
+    public enum AlbumQueryParameter
     {
         name,
         artist,
         album_artist,
+        composer,
         sort_by,
         sort_direction
     }
@@ -19,7 +20,7 @@ namespace SynologyDotNet.AudioStation.Model
         public const string Time = "time";
     }
     
-    public struct Album
+    public class Album
     {
         [JsonProperty("album_artist")]
         public string AlbumArtist { get; set; }

@@ -21,7 +21,7 @@ namespace SynologyDotNet.AudioStation
         /// <param name="additional">Additional filds to load</param>
         /// <param name="queryParameters">Filter parameters</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<SongList>> ListSongsAsync(int limit, int offset, SongQueryAdditional additional, params (SongQueryParameters, object)[] queryParameters)
+        public async Task<ApiListRessponse<SongList>> ListSongsAsync(int limit, int offset, SongQueryAdditional additional, params (SongQueryParameter, object)[] queryParameters)
         {
             var args = new List<(string, object)>(queryParameters.Select(f => (f.Item1.ToString(), f.Item2)));
             args.Add(GetLibraryArg());

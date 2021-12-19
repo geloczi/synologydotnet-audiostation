@@ -43,9 +43,9 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         private static void UpdateTestSong()
         {
             var response = AudioStation.ListSongsAsync(1, 0, SongQueryAdditional.All,
-                (SongQueryParameters.artist, Config.TestArtist),
-                (SongQueryParameters.album_artist, Config.TestArtist),
-                (SongQueryParameters.album, Config.TestAlbum)).Result;
+                (SongQueryParameter.artist, Config.TestArtist),
+                (SongQueryParameter.album_artist, Config.TestArtist),
+                (SongQueryParameter.album, Config.TestAlbum)).Result;
             Assert.AreNotEqual(response.Data.Songs.Length, 0, "Please make sure that your '/music' folder contains music files.");
             TestSong = response.Data.Songs.First();
             AssertSong(TestSong, SongQueryAdditional.All);
@@ -83,7 +83,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         [TestMethod]
         public async Task ListLatestAlbums()
         {
-            var response = await AudioStation.ListAlbumsAsync(TestPageSize, 0, null, (AlbumQueryParameters.sort_by, AlbumSortBy.Time), (AlbumQueryParameters.sort_direction, SortDirection.Descending));
+            var response = await AudioStation.ListAlbumsAsync(TestPageSize, 0, null, (AlbumQueryParameter.sort_by, AlbumSortBy.Time), (AlbumQueryParameter.sort_direction, SortDirection.Descending));
             Assert.IsTrue(response.Success);
             Assert.IsTrue(response.Data.Total > 0);
             Assert.IsTrue(response.Data.Albums.Length > 0);
@@ -165,11 +165,11 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         public async Task ListArtistAlbumSongs()
         {
             var response = await AudioStation.ListSongsAsync(TestPageSize, 0, SongQueryAdditional.All,
-                (SongQueryParameters.artist, Config.TestArtist),
-                (SongQueryParameters.album_artist, Config.TestArtist),
-                (SongQueryParameters.album, Config.TestAlbum),
-                (SongQueryParameters.sort_by, SongSortBy.track),
-                (SongQueryParameters.sort_direction, SortDirection.Descending));
+                (SongQueryParameter.artist, Config.TestArtist),
+                (SongQueryParameter.album_artist, Config.TestArtist),
+                (SongQueryParameter.album, Config.TestAlbum),
+                (SongQueryParameter.sort_by, SongSortBy.track),
+                (SongQueryParameter.sort_direction, SortDirection.Descending));
             Assert.IsTrue(response.Success);
             Assert.IsTrue(response.Data.Songs.Length >= 2);
             Assert.IsTrue(response.Data.Songs.Length <= TestPageSize);
@@ -183,11 +183,11 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
                 Assert.IsTrue(response.Data.Songs[i - 1].Additional.Tag.Track > response.Data.Songs[i].Additional.Tag.Track);
 
             response = AudioStation.ListSongsAsync(TestPageSize, 0, SongQueryAdditional.All,
-                (SongQueryParameters.artist, Config.TestArtist),
-                (SongQueryParameters.album_artist, Config.TestArtist),
-                (SongQueryParameters.album, Config.TestAlbum),
-                (SongQueryParameters.sort_by, SongSortBy.track),
-                (SongQueryParameters.sort_direction, SortDirection.Ascending)
+                (SongQueryParameter.artist, Config.TestArtist),
+                (SongQueryParameter.album_artist, Config.TestArtist),
+                (SongQueryParameter.album, Config.TestAlbum),
+                (SongQueryParameter.sort_by, SongSortBy.track),
+                (SongQueryParameter.sort_direction, SortDirection.Ascending)
             ).Result;
             foreach (var song in response.Data.Songs)
             {

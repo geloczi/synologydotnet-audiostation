@@ -7,7 +7,7 @@ namespace SynologyDotNet.AudioStation.Model
         public Playlist[] playlists { get; set; }
     }
 
-    public struct Playlist
+    public class Playlist
     {
         public static class ReservedNames
         {

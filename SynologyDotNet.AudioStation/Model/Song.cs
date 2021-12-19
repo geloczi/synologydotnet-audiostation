@@ -13,7 +13,7 @@ namespace SynologyDotNet.AudioStation.Model
         All = ~None
     }
     
-    public enum SongQueryParameters
+    public enum SongQueryParameter
     {
         id,
         artist,

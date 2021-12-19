@@ -17,7 +17,7 @@ namespace SynologyDotNet.AudioStation
         /// <param name="artist">Filter by artist name</param>
         /// <param name="queryParameters">Filter parameters</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<AlbumList>> ListAlbumsAsync(int limit, int offset, string artist = null, params (AlbumQueryParameters, object)[] queryParameters)
+        public async Task<ApiListRessponse<AlbumList>> ListAlbumsAsync(int limit, int offset, string artist = null, params (AlbumQueryParameter, object)[] queryParameters)
         {
             var args = new List<(string, object)>(queryParameters.Select(f => (f.Item1.ToString(), f.Item2)));
             args.Add(GetLibraryArg());

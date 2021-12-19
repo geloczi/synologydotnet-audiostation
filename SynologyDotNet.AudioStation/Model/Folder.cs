@@ -2,7 +2,7 @@
 
 namespace SynologyDotNet.AudioStation.Model
 {
-    public struct Folder
+    public class Folder
     {
         [JsonProperty("id")]
         public string ID { get; set; }
