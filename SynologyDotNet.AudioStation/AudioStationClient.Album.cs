@@ -21,6 +21,7 @@ namespace SynologyDotNet.AudioStation
         {
             var args = new List<(string, object)>(queryParameters.Select(f => (f.Item1.ToString(), f.Item2)));
             args.Add(GetLibraryArg());
+            args.Add(("additional", "avg_rating"));
             if (!string.IsNullOrWhiteSpace(artist))
                 args.Add(("artist", artist));
             

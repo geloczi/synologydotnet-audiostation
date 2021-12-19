@@ -24,12 +24,6 @@ namespace SynologyDotNet.AudioStation.Model
     public struct AlbumAdditional
     {
         [JsonProperty("avg_rating")]
-        public AverageRating AverageRating { get; set; }
-    }
-
-    public struct AverageRating
-    {
-        [JsonProperty("rating")]
-        public int Rating { get; set; }
+        public AvgRating AverageRating { get; set; }
     }
 }
