@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -18,6 +17,16 @@ namespace SynologyDotNet.AudioStation
     /// </summary>
     public sealed class AudioStationClient : StationConnectorBase
     {
+        #region Fields
+
+        /// <summary>
+        /// This exists only if the AudioStation package has been installed.
+        /// This endpoint is used to edit song metadata prgorammatically.
+        /// </summary>
+        private const string TagEditorEndpoint = "webman/3rdparty/AudioStation/tagEditorUI/tag_editor.cgi";
+
+        #endregion Fields
+
         #region Apis
 
         const string SYNO_AudioStation_Info = "SYNO.AudioStation.Info";
@@ -225,48 +234,10 @@ namespace SynologyDotNet.AudioStation
             TranscodeMode transcode,
             string songId,
             double positionSeconds,
-            Action<SongStream> readStreamAction)
+            Action<StreamResult> readStreamAction)
         {
             var req = CreateSongStreamRequest(SYNO_AudioStation_Stream, transcode, songId, positionSeconds);
-            using (var response = await Client.HttpClient.SendAsync(req.ToPostRequest(), HttpCompletionOption.ResponseHeadersRead, cancellationToken))
-            {
-                if (!response.IsSuccessStatusCode)
-                    throw new Exception($"Cannot open the specified song. HTTP {(int)response.StatusCode}");
-                if (response.Content is null)
-                    throw new NullReferenceException("No content.");
-                if (cancellationToken.IsCancellationRequested)
-                    throw new OperationCanceledException();
-                long contentLength;
-                string contentType;
-
-                // DSM 6 compatibility
-                if (response.Content is StreamContent streamContent)
-                {
-                    contentType = streamContent.Headers.ContentType.MediaType;
-                    contentLength = streamContent.Headers.ContentLength.Value;
-                }
-                // DSM 7 compatibility
-                else if (response.Content.Headers.TryGetValues("Content-Type", out var contentTypeValues)
-                    && contentTypeValues.Any()
-                    && response.Content.Headers.TryGetValues("Content-Length", out var contentLengthValues)
-                    && contentLengthValues.Any()
-                    && long.TryParse(contentLengthValues.First(), out contentLength))
-                {
-                    contentType = contentTypeValues.First();
-                }
-                // Not supported
-                else
-                {
-                    throw new NotSupportedException($"Content not supported: {response.Content.GetType().FullName}");
-                }
-
-                using (var responseStream = await response.Content.ReadAsStreamAsync())
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                        throw new OperationCanceledException();
-                    readStreamAction(new SongStream(responseStream, contentType, contentLength, cancellationToken));
-                }
-            }
+            await Client.QueryStreamAsync(req, readStreamAction, cancellationToken);
         }
 
         #endregion
@@ -291,11 +262,6 @@ namespace SynologyDotNet.AudioStation
         #region Tags
 
         /// <summary>
-        /// This exists only if the AudioStation package has been installed, and the Application Portal 'audio' is enabled too.
-        /// </summary>
-        private const string tag_editor_cgi_endpoint = "webman/3rdparty/AudioStation/tagEditorUI/tag_editor.cgi";
-
-        /// <summary>
         /// Query song tags
         /// </summary>
         /// <param name="paths">The internal path of the music file. Must contain forward slaashes '/'</param>
@@ -306,7 +272,7 @@ namespace SynologyDotNet.AudioStation
                 throw new ArgumentNullException(nameof(paths));
             if (paths.Any(p => p.Contains("\\")))
                 throw new ArgumentException("Invalid path. Path must contain forward slashes '/', not back-slashes '\\'");
-            var req = new RequestBuilder().SetEndpoint(tag_editor_cgi_endpoint).Action("load");
+            var req = new RequestBuilder().SetEndpoint(TagEditorEndpoint).Action("load");
             req["audioInfos"] = JsonConvert.SerializeObject(paths.Select(p => new { path = p }));
             req["requestFrom"] = string.Empty;
             var result = await Client.QueryObjectAsync<FileTags>(req);
@@ -323,7 +289,7 @@ namespace SynologyDotNet.AudioStation
             if (change?.AudioInfos?.Any() != true)
                 throw new ArgumentNullException($"{nameof(change)}.{nameof(change.AudioInfos)}");
 
-            var req = new RequestBuilder().SetEndpoint(tag_editor_cgi_endpoint).Action("apply");
+            var req = new RequestBuilder().SetEndpoint(TagEditorEndpoint).Action("apply");
             req["data"] = JsonConvert.SerializeObject(new object[] { change });
             var result = await Client.QueryObjectAsync<ApiResponse>(req);
             return result;

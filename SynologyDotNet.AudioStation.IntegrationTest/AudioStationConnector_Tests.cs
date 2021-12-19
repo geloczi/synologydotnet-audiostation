@@ -24,7 +24,8 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         {
             // Connect to the server and login
             AudioStation = new AudioStationClient();
-            SynoClient = new SynoClient(new Uri(CoreConfig.Server), true, AudioStation);
+            SynoClient = new SynoClient(new Uri(CoreConfig.Server), true)
+                .Add(AudioStation);
             var session = SynoClient.LoginAsync(CoreConfig.Username, CoreConfig.Password/*, SessionName*/).Result;
 
             Assert.IsNotNull(session);
@@ -300,15 +301,15 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
                 transcodeMode,
                 TestSong.ID,
                 0,
-                songStream =>
+                streamArgs =>
                 {
                     if (!string.IsNullOrEmpty(mediaType))
-                        Assert.AreEqual(songStream.ContentType, mediaType);
-                    Assert.IsTrue(songStream.ContentLength > 0);
+                        Assert.AreEqual(streamArgs.ContentType, mediaType);
+                    Assert.IsTrue(streamArgs.ContentLength > 0);
 
                     // Read 4KB just to test the download
                     var buffer = new byte[4096];
-                    songStream.Stream.Read(buffer, 0, buffer.Length);
+                    streamArgs.Stream.Read(buffer, 0, buffer.Length);
                     // There must be at least one non-zero byte in a 4KB chunk
                     Assert.IsTrue(buffer.Any(b => b > 0));
                 }
