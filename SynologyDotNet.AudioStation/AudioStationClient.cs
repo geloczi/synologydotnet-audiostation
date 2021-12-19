@@ -86,10 +86,10 @@ namespace SynologyDotNet.AudioStation
         public async Task<ApiDataResponse<SearchResults>> SearchAsync(string keyword)
         {
             var args = new List<(string, object)>();
-            args.Add(("additional", "song_tag, song_audio, song_rating")); // request detailed song info
+            args.Add(GetLibraryArg());
+            args.Add(("additional", "song_tag,song_audio,song_rating"));
             args.Add(("keyword", keyword));
-            var result = await Client.QueryObjectAsync<ApiDataResponse<SearchResults>>(SYNO_AudioStation_Search, "list", args.ToArray());
-            return result;
+            return await Client.QueryObjectAsync<ApiDataResponse<SearchResults>>(SYNO_AudioStation_Search, "list", args.ToArray());
         }
 
         /// <summary>
