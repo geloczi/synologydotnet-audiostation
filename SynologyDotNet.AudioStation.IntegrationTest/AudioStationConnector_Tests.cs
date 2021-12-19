@@ -231,8 +231,19 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         [TestMethod]
         public async Task GetArtistCover_NotFound()
         {
-            var response = await AudioStation.GetArtistCoverAsync("This artist does not even exist 123456789");
-            Assert.IsTrue(response is null);
+            Exception exception = null;
+            try
+            {
+                var response = await AudioStation.GetArtistCoverAsync("This artist does not even exist 123456789");
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+            Assert.IsNotNull(exception);
+            Assert.IsInstanceOfType(exception, typeof(SynologyDotNet.Core.Exceptions.SynoHttpException));
+            var synoHttpException = (SynologyDotNet.Core.Exceptions.SynoHttpException)exception;
+            Assert.AreEqual(System.Net.HttpStatusCode.NotFound, synoHttpException.StatusCode);
         }
 
         [TestMethod]
@@ -248,8 +259,19 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         [TestMethod]
         public async Task GetAlbumCover_NotFound()
         {
-            var response = await AudioStation.GetAlbumCoverAsync("This artist does not even exist 123456789", "This album does not even exist 123456789");
-            Assert.IsTrue(response is null);
+            Exception exception = null;
+            try
+            {
+                var response = await AudioStation.GetAlbumCoverAsync("This artist does not even exist 123456789", "This album does not even exist 123456789");
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+            Assert.IsNotNull(exception);
+            Assert.IsInstanceOfType(exception, typeof(SynologyDotNet.Core.Exceptions.SynoHttpException));
+            var synoHttpException = (SynologyDotNet.Core.Exceptions.SynoHttpException)exception;
+            Assert.AreEqual(System.Net.HttpStatusCode.NotFound, synoHttpException.StatusCode);
         }
 
         [TestMethod]

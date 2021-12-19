@@ -8,7 +8,7 @@
 	<!-- General -->
 	<PropertyGroup>
 		<Product>SynologyDotNet.AudioStation</Product>
-		<Version>0.3.0</Version>
+		<Version>0.4.0</Version>
 		<Description>SynologyDotNet.AudioStation</Description>
 		<RepositoryUrl>https://github.com/geloczigeri/synologydotnet-audiostation</RepositoryUrl>
 		<Authors>Gergő Gelóczi</Authors>
@@ -58,7 +58,7 @@
 		</When>
 		<Otherwise>
 			<ItemGroup>
-				<PackageReference Include="SynologyDotNet.Core" Version="0.3.0" />
+				<PackageReference Include="SynologyDotNet.Core" Version="0.4.0" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>

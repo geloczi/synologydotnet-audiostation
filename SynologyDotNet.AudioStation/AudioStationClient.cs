@@ -91,7 +91,7 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ByteArrayData> GetArtistCoverAsync(string artist)
         {
-            var result = await Client.QueryImageAsync(SYNO_AudioStation_Cover, "getcover", true,
+            var result = await Client.QueryByteArrayAsync(SYNO_AudioStation_Cover, "getcover",
                 ("artist_name", artist));
             return result;
         }
@@ -124,7 +124,7 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ByteArrayData> GetAlbumCoverAsync(string artist, string album)
         {
-            var result = await Client.QueryImageAsync(SYNO_AudioStation_Cover, "getcover", true,
+            var result = await Client.QueryByteArrayAsync(SYNO_AudioStation_Cover, "getcover",
                 ("album_name", album),
                 ("album_artist_name", artist));
             return result;
@@ -167,7 +167,7 @@ namespace SynologyDotNet.AudioStation
             var args = new List<(string, object)>();
             args.Add(("id", id));
             args.Add(("additional", "song_tag, song_audio, song_rating")); // request detailed song info
-            var result = await Client.QueryAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "getinfo", args.ToArray());
+            var result = await Client.QueryObjectAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "getinfo", args.ToArray());
             return result;
         }
 
@@ -181,7 +181,7 @@ namespace SynologyDotNet.AudioStation
         {
             if (rating < 0 || rating > 5)
                 throw new ArgumentOutOfRangeException(nameof(rating), "Value range: 0 - 5");
-            var result = await Client.QueryAsync<ApiResponse>(SYNO_AudioStation_Song, "setrating",
+            var result = await Client.QueryObjectAsync<ApiResponse>(SYNO_AudioStation_Song, "setrating",
                 ("id", songId),
                 ("rating", rating));
             return result;
@@ -304,13 +304,18 @@ namespace SynologyDotNet.AudioStation
         }
         #endregion
 
-        #region Search
+        #region Search        
+        /// <summary>
+        /// Searches the music library.
+        /// </summary>
+        /// <param name="keyword">The text to search.</param>
+        /// <returns></returns>
         public async Task<ApiDataResponse<SearchResults>> SearchAsync(string keyword)
         {
             var args = new List<(string, object)>();
             args.Add(("additional", "song_tag, song_audio, song_rating")); // request detailed song info
             args.Add(("keyword", keyword));
-            var result = await Client.QueryAsync<ApiDataResponse<SearchResults>>(SYNO_AudioStation_Search, "list", args.ToArray());
+            var result = await Client.QueryObjectAsync<ApiDataResponse<SearchResults>>(SYNO_AudioStation_Search, "list", args.ToArray());
             return result;
         }
         #endregion
