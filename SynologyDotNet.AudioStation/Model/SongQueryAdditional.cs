@@ -6,9 +6,12 @@ namespace SynologyDotNet.AudioStation.Model
     public enum SongQueryAdditional : short
     {
         None = 0,
+
+        // Do not rename!
         song_tag = 1,
         song_audio = 2,
         song_rating = 4,
+
         All = ~None
     }
 }

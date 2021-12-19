@@ -18,21 +18,21 @@ namespace SynologyDotNet.AudioStation
         /// </summary>
         /// <param name="limit">Maximum number of items to return</param>
         /// <param name="offset">Start position in the list (use it for paging)</param>
-        /// <param name="additional">Additional filds to load</param>
+        /// <param name="additionalFields">Additional fields to load</param>
         /// <param name="queryParameters">Filter parameters</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<SongList>> ListSongsAsync(int limit, int offset, SongQueryAdditional additional, params (SongQueryParameter, object)[] queryParameters)
+        public async Task<ApiListRessponse<SongList>> ListSongsAsync(int limit, int offset, SongQueryAdditional additionalFields, params (SongQueryParameter, object)[] queryParameters)
         {
             var args = new List<(string, object)>(queryParameters.Select(f => (f.Item1.ToString(), f.Item2)));
             args.Add(GetLibraryArg());
-            if (additional != SongQueryAdditional.None)
+            if (additionalFields != SongQueryAdditional.None)
             {
                 args.Add(("additional", string.Join(",", (new[] {
                         SongQueryAdditional.song_audio,
                         SongQueryAdditional.song_rating,
                         SongQueryAdditional.song_tag
                     })
-                    .Where(x => additional.HasFlag(x))
+                    .Where(x => additionalFields.HasFlag(x))
                     .Select(x => x.ToString()))));
             }
             var result = await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "list", limit, offset, args.ToArray());

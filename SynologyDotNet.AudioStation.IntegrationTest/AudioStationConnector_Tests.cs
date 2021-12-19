@@ -56,8 +56,8 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
             var response = AudioStation.ListPlaylistsAsync(1000, 0).Result;
             Assert.IsTrue(response.Success);
             Assert.IsTrue(response.Data.Total > 0, $"Please create a playlist in Audio Station with this name: {Config.TestPlaylistName}");
-            Assert.IsTrue(response.Data.playlists.Length > 0);
-            TestPlaylist = response.Data.playlists.First(x => x.name == Config.TestPlaylistName);
+            Assert.IsTrue(response.Data.Playlists.Length > 0);
+            TestPlaylist = response.Data.Playlists.First(x => x.Name == Config.TestPlaylistName);
         }
 
         [TestMethod]
@@ -368,22 +368,32 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
             var response = await AudioStation.ListPlaylistsAsync(TestPageSize, 0);
             Assert.IsTrue(response.Success);
             Assert.IsTrue(response.Data.Total > 0);
-            Assert.IsTrue(response.Data.playlists.Length > 0);
+            Assert.IsTrue(response.Data.Playlists.Length > 0);
         }
 
         [TestMethod]
         public async Task GetPlaylist()
         {
-            var playlist = await AudioStation.GetPlaylistAsync(TestPageSize, 0, TestPlaylist.id);
+            var playlist = await AudioStation.GetPlaylistAsync(TestPageSize, 0, TestPlaylist.ID, SongQueryAdditional.None);
             Assert.IsTrue(playlist.Success);
-            Assert.IsFalse(string.IsNullOrEmpty(playlist.Data.id));
-            Assert.IsTrue(playlist.Data.additional.songs.Length > 0);
-            foreach (var song in playlist.Data.additional.songs)
+            Assert.IsFalse(string.IsNullOrEmpty(playlist.Data.ID));
+            Assert.IsTrue(playlist.Data.Additional.Songs.Length > 0);
+            foreach (var song in playlist.Data.Additional.Songs)
             {
-                Assert.IsFalse(string.IsNullOrEmpty(song.id));
-                Assert.IsFalse(string.IsNullOrEmpty(song.title));
-                Assert.IsFalse(string.IsNullOrEmpty(song.path));
-                Assert.IsFalse(string.IsNullOrEmpty(song.type));
+                AssertSong(song, SongQueryAdditional.None);
+            }
+        }
+
+        [TestMethod]
+        public async Task GetPlaylist_SongDetails()
+        {
+            var playlist = await AudioStation.GetPlaylistAsync(TestPageSize, 0, TestPlaylist.ID, SongQueryAdditional.All);
+            Assert.IsTrue(playlist.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(playlist.Data.ID));
+            Assert.IsTrue(playlist.Data.Additional.Songs.Length > 0);
+            foreach (var song in playlist.Data.Additional.Songs)
+            {
+                AssertSong(song, SongQueryAdditional.All);
             }
         }
 

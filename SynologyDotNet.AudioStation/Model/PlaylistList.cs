@@ -1,9 +1,11 @@
-﻿using SynologyDotNet.Core.Responses;
+﻿using Newtonsoft.Json;
+using SynologyDotNet.Core.Responses;
 
 namespace SynologyDotNet.AudioStation.Model
 {
     public class PlaylistList : ListResponseBase
     {
-        public Playlist[] playlists { get; set; }
+        [JsonProperty("playlists")]
+        public Playlist[] Playlists { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace SynologyDotNet.AudioStation.Model
+﻿using Newtonsoft.Json;
+
+namespace SynologyDotNet.AudioStation.Model
 {
     public class Playlist
     {
@@ -7,40 +9,39 @@
             public const string SharedSongs = "__SYNO_AUDIO_SHARED_SONGS__";
         }
 
-        public string id { get; set; }
-        public string library { get; set; }
-        public string name { get; set; }
-        public string path { get; set; }
-        public string sharing_status { get; set; }
-        public string type { get; set; }
-        public PlaylistAdditional additional { get; set; }
+        [JsonProperty("id")]
+        public string ID { get; set; }
 
-        public override string ToString() => id ?? base.ToString();
+        [JsonProperty("library")]
+        public string Library { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("path")]
+        public string Path { get; set; }
+
+        [JsonProperty("sharing_status")]
+        public string SharingStatus { get; set; }
+
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
+        [JsonProperty("additional")]
+        public PlaylistAdditional Additional { get; set; }
+
+        public override string ToString() => ID ?? base.ToString();
     }
 
     public struct PlaylistAdditional
     {
-        public PlaylistSong[] songs { get; set; }
-        public int songs_offset { get; set; }
-        public int songs_total { get; set; }
-        //public PlaylistSharingInfo sharing_info { get; set; }
-    }
+        [JsonProperty("songs")]
+        public Song[] Songs { get; set; }
 
-    //public struct PlaylistSharingInfo
-    //{
-    //	public string date_available { get; set; }
-    //	public string date_expired { get; set; }
-    //	public string id { get; set; }
-    //	public string status { get; set; }
-    //	public string url { get; set; }
-    //}
-    
-    public struct PlaylistSong
-    {
-        public string id { get; set; }
-        public string path { get; set; }
-        public string title { get; set; }
-        public string type { get; set; }
-        public override string ToString() => title ?? base.ToString();
+        [JsonProperty("songs_offset")]
+        public int Offset { get; set; }
+
+        [JsonProperty("songs_total")]
+        public int Total { get; set; }
     }
 }
