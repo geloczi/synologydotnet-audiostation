@@ -178,7 +178,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
                 (SongQueryParameter.artist, Config.TestArtist),
                 (SongQueryParameter.album_artist, Config.TestArtist),
                 (SongQueryParameter.album, Config.TestAlbum),
-                (SongQueryParameter.sort_by, SongSortBy.track),
+                (SongQueryParameter.sort_by, SongSortBy.Track),
                 (SongQueryParameter.sort_direction, SortDirection.Descending));
             Assert.IsTrue(response.Success);
             Assert.IsTrue(response.Data.Songs.Length >= 2);
@@ -196,7 +196,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
                 (SongQueryParameter.artist, Config.TestArtist),
                 (SongQueryParameter.album_artist, Config.TestArtist),
                 (SongQueryParameter.album, Config.TestAlbum),
-                (SongQueryParameter.sort_by, SongSortBy.track),
+                (SongQueryParameter.sort_by, SongSortBy.Track),
                 (SongQueryParameter.sort_direction, SortDirection.Ascending)
             ).Result;
             foreach (var song in response.Data.Songs)

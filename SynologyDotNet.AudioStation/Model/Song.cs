@@ -1,39 +1,7 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace SynologyDotNet.AudioStation.Model
 {
-    [Flags]
-    public enum SongQueryAdditional : short
-    {
-        None = 0,
-        song_tag = 1,
-        song_audio = 2,
-        song_rating = 4,
-        All = ~None
-    }
-    
-    public enum SongQueryParameter
-    {
-        id,
-        artist,
-        album_artist,
-        album,
-        sort_by,
-        sort_direction
-    }
-    
-    public static class SongSortBy
-    {
-        public const string title = "title";
-        public const string song_rating = "song_rating";
-        public const string album = "album";
-        public const string album_artist = "album_artist";
-        public const string year = "year";
-        public const string track = "track";
-        public const string random = "random";
-    }
-
     public class Song
     {
         /// <summary>
