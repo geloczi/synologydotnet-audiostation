@@ -19,6 +19,7 @@ namespace SynologyDotNet.AudioStation
     public sealed class AudioStationClient : StationConnectorBase
     {
         #region Apis
+
         const string SYNO_AudioStation_Info = "SYNO.AudioStation.Info";
         const string SYNO_AudioStation_Album = "SYNO.AudioStation.Album";
         const string SYNO_AudioStation_Composer = "SYNO.AudioStation.Composer";
@@ -47,7 +48,22 @@ namespace SynologyDotNet.AudioStation
             SYNO_AudioStation_Lyrics,
             SYNO_AudioStation_Playlist
         };
+
         #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets a value indicating whether only the personal music folder is used.
+        /// True if only the current user's personal music folder is used. 
+        /// False if the personal and the shared music are used.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if only the current user's personal music folder is used; <c>false</c> if both the personal and the shared music are used.
+        /// </value>
+        public bool PersonalMusicOnly { get; set; }
+
+        #endregion Properties
 
         /// <summary>Initializes a new instance of the <see cref="AudioStationClient" /> class.</summary>
         public AudioStationClient() : base()
@@ -55,6 +71,7 @@ namespace SynologyDotNet.AudioStation
         }
 
         #region Folder
+
         /// <summary>
         /// List folders
         /// </summary>
@@ -64,14 +81,18 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ApiListRessponse<FolderList>> ListFoldersAsync(int limit, int offset, string folderId = null)
         {
-            if (string.IsNullOrEmpty(folderId))
-                return await Client.QueryListAsync<ApiListRessponse<FolderList>>(SYNO_AudioStation_Folder, "list", limit, offset);
-            else
-                return await Client.QueryListAsync<ApiListRessponse<FolderList>>(SYNO_AudioStation_Folder, "list", limit, offset, ("id", folderId));
+            var args = new List<(string, object)>();
+            args.Add(GetLibraryArg());
+            if (!string.IsNullOrEmpty(folderId))
+                args.Add(("id", folderId));
+
+            return await Client.QueryListAsync<ApiListRessponse<FolderList>>(SYNO_AudioStation_Folder, "list", limit, offset, args.ToArray());
         }
-        #endregion
+
+        #endregion Folder
 
         #region Artist
+
         /// <summary>
         /// List artists
         /// </summary>
@@ -80,8 +101,7 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ApiListRessponse<ArtistList>> ListArtistsAsync(int limit, int offset)
         {
-            var result = await Client.QueryListAsync<ApiListRessponse<ArtistList>>(SYNO_AudioStation_Artist, "list", limit, offset);
-            return result;
+            return await Client.QueryListAsync<ApiListRessponse<ArtistList>>(SYNO_AudioStation_Artist, "list", limit, offset, GetLibraryArg()); //personal
         }
 
         /// <summary>
@@ -91,13 +111,15 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ByteArrayData> GetArtistCoverAsync(string artist)
         {
-            var result = await Client.QueryByteArrayAsync(SYNO_AudioStation_Cover, "getcover",
+            return await Client.QueryByteArrayAsync(SYNO_AudioStation_Cover, "getcover",
+                GetLibraryArg(),
                 ("artist_name", artist));
-            return result;
         }
-        #endregion
+
+        #endregion Artist
 
         #region Album
+
         /// <summary>
         /// List albums
         /// </summary>
@@ -109,11 +131,11 @@ namespace SynologyDotNet.AudioStation
         public async Task<ApiListRessponse<AlbumList>> ListAlbumsAsync(int limit, int offset, string artist = null, params (AlbumQueryParameters, object)[] queryParameters)
         {
             var args = new List<(string, object)>(queryParameters.Select(f => (f.Item1.ToString(), f.Item2)));
+            args.Add(GetLibraryArg());
             if (!string.IsNullOrWhiteSpace(artist))
                 args.Add(("artist", artist));
 
-            var result = await Client.QueryListAsync<ApiListRessponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset, args.ToArray());
-            return result;
+            return await Client.QueryListAsync<ApiListRessponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset, args.ToArray());
         }
 
         /// <summary>
@@ -124,14 +146,15 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ByteArrayData> GetAlbumCoverAsync(string artist, string album)
         {
-            var result = await Client.QueryByteArrayAsync(SYNO_AudioStation_Cover, "getcover",
+            return await Client.QueryByteArrayAsync(SYNO_AudioStation_Cover, "getcover",
                 ("album_name", album),
                 ("album_artist_name", artist));
-            return result;
         }
-        #endregion
+
+        #endregion Album
 
         #region Song
+
         /// <summary>
         /// List songs
         /// </summary>
@@ -143,6 +166,7 @@ namespace SynologyDotNet.AudioStation
         public async Task<ApiListRessponse<SongList>> ListSongsAsync(int limit, int offset, SongQueryAdditional additional, params (SongQueryParameters, object)[] queryParameters)
         {
             var args = new List<(string, object)>(queryParameters.Select(f => (f.Item1.ToString(), f.Item2)));
+            args.Add(GetLibraryArg());
             if (additional != SongQueryAdditional.None)
             {
                 args.Add(("additional", string.Join(",", (new[] {
@@ -244,6 +268,7 @@ namespace SynologyDotNet.AudioStation
                 }
             }
         }
+
         #endregion
 
         // Use tageditor instead!
@@ -264,6 +289,7 @@ namespace SynologyDotNet.AudioStation
         //#endregion
 
         #region Tags
+
         /// <summary>
         /// This exists only if the AudioStation package has been installed, and the Application Portal 'audio' is enabled too.
         /// </summary>
@@ -302,9 +328,11 @@ namespace SynologyDotNet.AudioStation
             var result = await Client.QueryObjectAsync<ApiResponse>(req);
             return result;
         }
+
         #endregion
 
         #region Search        
+
         /// <summary>
         /// Searches the music library.
         /// </summary>
@@ -318,6 +346,7 @@ namespace SynologyDotNet.AudioStation
             var result = await Client.QueryObjectAsync<ApiDataResponse<SearchResults>>(SYNO_AudioStation_Search, "list", args.ToArray());
             return result;
         }
+
         #endregion
 
         #region Playlist
@@ -341,6 +370,7 @@ namespace SynologyDotNet.AudioStation
 
         #region Private Methods
 
+        private (string, string) GetLibraryArg() => ("library", PersonalMusicOnly ? "personal" : "all");
 
         private RequestBuilder CreateSongStreamRequest(string apiName, TranscodeMode transcode, string songId, double positionInSeconds)
         {

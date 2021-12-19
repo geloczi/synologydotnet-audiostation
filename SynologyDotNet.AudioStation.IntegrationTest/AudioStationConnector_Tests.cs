@@ -12,7 +12,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
     [TestClass]
     public class AudioStationConnector_Tests : MyTestBase
     {
-        const int TestPageSize = 10;
+        const int TestPageSize = 100;
         //const string SessionName = "AudioStation";
         static SynoClient SynoClient;
         static AudioStationClient AudioStation;

@@ -34,22 +34,34 @@ namespace SynologyDotNet.AudioStation.Model
         public const string random = "random";
     }
 
-    public struct Song
+    public class Song
     {
+        /// <summary>
+        /// Gets or sets the identifier of the song.
+        /// Songs in the personal library have "music_p_" prefix.
+        /// Songs in the shared library have "music_" prefix.
+        /// </summary>
+        /// <value>
+        /// The identifier.
+        /// </value>
         [JsonProperty("id")]
         public string ID { get; set; }
+
         [JsonProperty("path")]
         public string Path { get; set; }
+
         [JsonProperty("title")]
         public string Title { get; set; }
+
         [JsonProperty("type")]
         public string Type { get; set; }
+
         [JsonProperty("additional")]
         public SongAdditional Additional { get; set; }
 
         public override string ToString()
         {
-            return Title ?? base.ToString();
+            return $"{ID}, {Path}";
         }
     }
 
