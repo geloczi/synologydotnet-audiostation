@@ -10,16 +10,6 @@ namespace SynologyDotNet.AudioStation
     /// </summary>
     public partial class AudioStationClient : StationConnectorBase
     {
-        #region Fields
-
-        /// <summary>
-        /// This exists only if the AudioStation package has been installed.
-        /// This endpoint is used to edit song metadata prgorammatically.
-        /// </summary>
-        private const string TagEditorEndpoint = "webman/3rdparty/AudioStation/tagEditorUI/tag_editor.cgi";
-
-        #endregion Fields
-
         #region Apis
 
         const string SYNO_AudioStation_Info = "SYNO.AudioStation.Info";
@@ -108,7 +98,7 @@ namespace SynologyDotNet.AudioStation
 
             return await Client.QueryListAsync<ApiListRessponse<FolderList>>(SYNO_AudioStation_Folder, "list", limit, offset, args.ToArray());
         }
-
+        
         // Use tageditor instead!
         //#region Lyrics
         //public async Task<ApiDataResponse<Lyrics>> GetLyricsAsync(string songId)

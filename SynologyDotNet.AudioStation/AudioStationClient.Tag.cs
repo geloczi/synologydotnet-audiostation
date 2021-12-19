@@ -11,6 +11,12 @@ namespace SynologyDotNet.AudioStation
     public partial class AudioStationClient
     {
         /// <summary>
+        /// This exists only if the AudioStation package has been installed.
+        /// This endpoint is used to edit song metadata prgorammatically.
+        /// </summary>
+        private const string TagEditorEndpoint = "webman/3rdparty/AudioStation/tagEditorUI/tag_editor.cgi";
+
+        /// <summary>
         /// Query song tags
         /// </summary>
         /// <param name="paths">The internal path of the music file. Must contain forward slaashes '/'</param>

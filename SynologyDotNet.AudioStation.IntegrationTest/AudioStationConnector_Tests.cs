@@ -121,7 +121,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         public async Task Song_ListWith_song_rating() => await ListSongs(SongQueryAdditional.song_rating);
         [TestMethod]
         public async Task Song_ListWith_song_tag() => await ListSongs(SongQueryAdditional.song_tag);
-        
+
         private async Task ListSongs(SongQueryAdditional queryAdditional)
         {
             var response = await AudioStation.ListSongsAsync(TestPageSize, 0, queryAdditional);
@@ -451,6 +451,21 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
             change.Comment = tag.Comment;
             Assert.IsTrue((await AudioStation.SetSongFileTags(change)).Success);
         }
+
+        // This is tested manually
+        //[TestMethod]
+        //public async Task TestReIndex()
+        //{
+        //    // Start reindexing
+        //    var startReIndexResponse = await AudioStation.StartReIndex();
+        //    Assert.IsTrue(startReIndexResponse.Success);
+
+        //    // Check reindexing state
+        //    Thread.Sleep(100);
+        //    var getReIndexStateResponse = await AudioStation.GetReIndexState();
+        //    Assert.IsTrue(getReIndexStateResponse.Success);
+        //    Assert.IsTrue(getReIndexStateResponse.ReIndexing);
+        //}
 
         #region Private Methods
         private static void AssertSong(Song song, SongQueryAdditional additional)
