@@ -21,7 +21,7 @@ This example shows how to configure the connection and login with username and p
 var audioStation = new AudioStationClient();
 
 // Create the SynoClient which communicates with the server, this can be re-used across all Station Clients.
-var client = new SynoClient(new Uri("https://MySynolgyNAS:5001/"), audioStation);
+var client = new SynoClient(new Uri("https://MySynolgyNAS:5001/")).Add(audioStation);
 
 // Login
 await client.LoginAsync("username", "password");
