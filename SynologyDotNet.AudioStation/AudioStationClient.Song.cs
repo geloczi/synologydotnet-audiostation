@@ -35,8 +35,34 @@ namespace SynologyDotNet.AudioStation
                     .Where(x => additionalFields.HasFlag(x))
                     .Select(x => x.ToString()))));
             }
-            var result = await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "list", limit, offset, args.ToArray());
-            return result;
+            return await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "list", limit, offset, args.ToArray());
+        }
+
+        /// <summary>
+        /// List songs
+        /// </summary>
+        /// <param name="limit">Maximum number of items to return</param>
+        /// <param name="offset">Start position in the list (use it for paging)</param>
+        /// <param name="title">Title to search</param>
+        /// <param name="additionalFields">Additional fields to load</param>
+        /// <returns></returns>
+        public async Task<ApiListRessponse<SongList>> SearchSongsByTitleAsync(int limit, int offset, string title, SongQueryAdditional additionalFields)
+        {
+            var args = new List<(string, object)>();
+            args.Add(GetLibraryArg());
+            args.Add(("title", title));
+            args.Add(("keyword", title));
+            if (additionalFields != SongQueryAdditional.None)
+            {
+                args.Add(("additional", string.Join(",", (new[] {
+                        SongQueryAdditional.song_audio,
+                        SongQueryAdditional.song_rating,
+                        SongQueryAdditional.song_tag
+                    })
+                    .Where(x => additionalFields.HasFlag(x))
+                    .Select(x => x.ToString()))));
+            }
+            return await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "search", limit, offset, args.ToArray());
         }
 
         /// <summary>
@@ -49,8 +75,7 @@ namespace SynologyDotNet.AudioStation
             var args = new List<(string, object)>();
             args.Add(("id", id));
             args.Add(("additional", "song_tag, song_audio, song_rating")); // request detailed song info
-            var result = await Client.QueryObjectAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "getinfo", args.ToArray());
-            return result;
+            return await Client.QueryObjectAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "getinfo", args.ToArray());
         }
 
         /// <summary>
@@ -63,10 +88,9 @@ namespace SynologyDotNet.AudioStation
         {
             if (rating < 0 || rating > 5)
                 throw new ArgumentOutOfRangeException(nameof(rating), "Value range: 0 - 5");
-            var result = await Client.QueryObjectAsync<ApiResponse>(SYNO_AudioStation_Song, "setrating",
+            return await Client.QueryObjectAsync<ApiResponse>(SYNO_AudioStation_Song, "setrating",
                 ("id", songId),
                 ("rating", rating));
-            return result;
         }
 
         /// <summary>

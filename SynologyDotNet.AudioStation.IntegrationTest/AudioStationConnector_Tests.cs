@@ -404,6 +404,14 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
+        public async Task SearchSongsByTitleAsync()
+        {
+            var response = await AudioStation.SearchSongsByTitleAsync(TestPageSize, 0, TestSong.Title, SongQueryAdditional.All);
+            Assert.IsTrue(response.Success);
+            Assert.IsTrue(response.Data.Songs.Any(x => x.Title.Contains(TestSong.Title, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        [TestMethod]
         public async Task Playlist_List()
         {
             var response = await AudioStation.ListPlaylistsAsync(TestPageSize, 0);
