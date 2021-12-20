@@ -41,6 +41,13 @@ namespace SynologyDotNet.AudioStation
                 ("album_artist_name", artist));
         }
 
+        /// <summary>
+        /// Searches the albums by name.
+        /// </summary>
+        /// <param name="limit">The limit.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="keyword">The keyword.</param>
+        /// <returns></returns>
         public async Task<ApiListRessponse<AlbumList>> SearchAlbumsByNameAsync(int limit, int offset, string keyword)
         {
             return await Client.QueryListAsync<ApiListRessponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset,

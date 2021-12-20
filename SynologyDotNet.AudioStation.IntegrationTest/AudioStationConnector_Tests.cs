@@ -388,6 +388,14 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
+        public async Task SearchComposersByName()
+        {
+            var response = await AudioStation.SearchComposersByNameAsync(TestPageSize, 0, TestSong.Additional.Tag.Composer);
+            Assert.IsTrue(response.Success);
+            Assert.IsTrue(response.Data.Composers.Any(x => x.Name.Contains(TestSong.Additional.Tag.Composer, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        [TestMethod]
         public async Task Playlist_List()
         {
             var response = await AudioStation.ListPlaylistsAsync(TestPageSize, 0);
