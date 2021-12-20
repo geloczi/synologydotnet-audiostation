@@ -364,6 +364,22 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         }
 
         [TestMethod]
+        public async Task SearchArtistsByName()
+        {
+            var response = await AudioStation.SearchArtistsByNameAsync(TestPageSize, 0, TestSong.Additional.Tag.Artist);
+            Assert.IsTrue(response.Success);
+            Assert.IsTrue(response.Data.Artists.Any(x => x.Name.Contains(TestSong.Additional.Tag.Artist, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        [TestMethod]
+        public async Task SearchArtistsByGenre()
+        {
+            var response = await AudioStation.SearchArtistsByGenreAsync(TestPageSize, 0, TestSong.Additional.Tag.Genre);
+            Assert.IsTrue(response.Success);
+            Assert.IsTrue(response.Data.Artists.Any(x => x.Name.Equals(TestSong.Additional.Tag.Artist, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        [TestMethod]
         public async Task Playlist_List()
         {
             var response = await AudioStation.ListPlaylistsAsync(TestPageSize, 0);
