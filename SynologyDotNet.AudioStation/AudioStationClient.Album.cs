@@ -25,7 +25,7 @@ namespace SynologyDotNet.AudioStation
             if (!string.IsNullOrWhiteSpace(artist))
                 args.Add(("artist", artist));
             
-            return await Client.QueryListAsync<ApiListRessponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset, args.ToArray());
+            return await Client.QueryListAsync<ApiListRessponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -38,7 +38,8 @@ namespace SynologyDotNet.AudioStation
         {
             return await Client.QueryByteArrayAsync(SYNO_AudioStation_Cover, "getcover",
                 ("album_name", album),
-                ("album_artist_name", artist));
+                ("album_artist_name", artist))
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -54,7 +55,8 @@ namespace SynologyDotNet.AudioStation
                 GetLibraryArg(),
                 ("additional", "avg_rating"),
                 ("keyword", keyword),
-                ("filter", keyword));
+                ("filter", keyword))
+                .ConfigureAwait(false);
         }
     }
 }

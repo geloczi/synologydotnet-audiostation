@@ -18,7 +18,7 @@ namespace SynologyDotNet.AudioStation
         public async Task<ApiListRessponse<PlaylistList>> ListPlaylistsAsync(int limit, int offset)
         {
             var result = await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(SYNO_AudioStation_Playlist, "list", limit, offset,
-                GetLibraryArg());
+                GetLibraryArg()).ConfigureAwait(false);
             return result;
         }
 
@@ -53,10 +53,10 @@ namespace SynologyDotNet.AudioStation
             }
             args.Add(("additional", string.Join(",", additionalFieldNames)));
 
-            var test = await Client.QueryByteArrayAsync(SYNO_AudioStation_Playlist, "getinfo", args.ToArray());
+            var test = await Client.QueryByteArrayAsync(SYNO_AudioStation_Playlist, "getinfo", args.ToArray()).ConfigureAwait(false);
             string json = Encoding.UTF8.GetString(test.Data);
 
-            var playlists = await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(SYNO_AudioStation_Playlist, "getinfo", limit, offset, args.ToArray());
+            var playlists = await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(SYNO_AudioStation_Playlist, "getinfo", limit, offset, args.ToArray()).ConfigureAwait(false);
             return new ApiDataResponse<Playlist>(playlists, playlists.Data?.Playlists?.FirstOrDefault() ?? default);
         }
 
@@ -73,7 +73,7 @@ namespace SynologyDotNet.AudioStation
                 ("offset", -1),
                 ("limit", 0),
                 ("songs", string.Join(",", songIds))
-            );
+            ).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace SynologyDotNet.AudioStation
                 ("offset", startIndex),
                 ("limit", count),
                 ("songs", string.Empty)
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

@@ -16,7 +16,8 @@ namespace SynologyDotNet.AudioStation
         {
             return await Client.QueryListAsync<ApiListRessponse<GenreList>>(SYNO_AudioStation_Genre, "list", limit, offset, 
                 GetLibraryArg(),
-                ("additional", "avg_rating"));
+                ("additional", "avg_rating"))
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -32,7 +33,8 @@ namespace SynologyDotNet.AudioStation
                 GetLibraryArg(),
                 ("additional", "avg_rating"),
                 ("keyword", keyword),
-                ("filter", keyword));
+                ("filter", keyword))
+                .ConfigureAwait(false);
         }
     }
 }

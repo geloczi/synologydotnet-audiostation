@@ -30,7 +30,7 @@ namespace SynologyDotNet.AudioStation
             var req = new RequestBuilder().SetEndpoint(TagEditorEndpoint).Action("load");
             req["audioInfos"] = JsonConvert.SerializeObject(paths.Select(p => new { path = p }));
             req["requestFrom"] = string.Empty;
-            var result = await Client.QueryObjectAsync<FileTags>(req);
+            var result = await Client.QueryObjectAsync<FileTags>(req).ConfigureAwait(false);
             return result;
         }
 
@@ -46,7 +46,7 @@ namespace SynologyDotNet.AudioStation
 
             var req = new RequestBuilder().SetEndpoint(TagEditorEndpoint).Action("apply");
             req["data"] = JsonConvert.SerializeObject(new object[] { change });
-            var result = await Client.QueryObjectAsync<ApiResponse>(req);
+            var result = await Client.QueryObjectAsync<ApiResponse>(req).ConfigureAwait(false);
             return result;
         }
 

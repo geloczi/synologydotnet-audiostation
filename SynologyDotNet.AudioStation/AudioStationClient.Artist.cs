@@ -17,7 +17,7 @@ namespace SynologyDotNet.AudioStation
         {
             return await Client.QueryListAsync<ApiListRessponse<ArtistList>>(SYNO_AudioStation_Artist, "list", limit, offset, 
                 GetLibraryArg(),
-                ("additional", "avg_rating"));
+                ("additional", "avg_rating")).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace SynologyDotNet.AudioStation
             return await Client.QueryListAsync<ApiListRessponse<ArtistList>>(SYNO_AudioStation_Artist, "list", limit, offset, 
                 GetLibraryArg(),
                 ("additional", "avg_rating"),
-                ("genre", genre));
+                ("genre", genre)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -48,7 +48,8 @@ namespace SynologyDotNet.AudioStation
                 GetLibraryArg(),
                 ("additional", "avg_rating"),
                 ("keyword", keyword),
-                ("filter", keyword));
+                ("filter", keyword))
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -60,7 +61,8 @@ namespace SynologyDotNet.AudioStation
         {
             return await Client.QueryByteArrayAsync(SYNO_AudioStation_Cover, "getcover",
                 GetLibraryArg(),
-                ("artist_name", artist));
+                ("artist_name", artist))
+                .ConfigureAwait(false);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace SynologyDotNet.AudioStation
                     .Where(x => additionalFields.HasFlag(x))
                     .Select(x => x.ToString()))));
             }
-            return await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "list", limit, offset, args.ToArray());
+            return await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace SynologyDotNet.AudioStation
                     .Where(x => additionalFields.HasFlag(x))
                     .Select(x => x.ToString()))));
             }
-            return await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "search", limit, offset, args.ToArray());
+            return await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "search", limit, offset, args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace SynologyDotNet.AudioStation
             var args = new List<(string, object)>();
             args.Add(("id", id));
             args.Add(("additional", "song_tag, song_audio, song_rating")); // request detailed song info
-            return await Client.QueryObjectAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "getinfo", args.ToArray());
+            return await Client.QueryObjectAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "getinfo", args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace SynologyDotNet.AudioStation
                 throw new ArgumentOutOfRangeException(nameof(rating), "Value range: 0 - 5");
             return await Client.QueryObjectAsync<ApiResponse>(SYNO_AudioStation_Song, "setrating",
                 ("id", songId),
-                ("rating", rating));
+                ("rating", rating)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace SynologyDotNet.AudioStation
             Action<StreamResult> readStreamAction)
         {
             var req = CreateSongStreamRequest(SYNO_AudioStation_Stream, transcode, songId, positionSeconds);
-            await Client.QueryStreamAsync(req, readStreamAction, cancellationToken);
+            await Client.QueryStreamAsync(req, readStreamAction, cancellationToken).ConfigureAwait(false);
         }
 
         private RequestBuilder CreateSongStreamRequest(string apiName, TranscodeMode transcode, string songId, double positionInSeconds)

@@ -17,7 +17,7 @@ namespace SynologyDotNet.AudioStation
         {
             var req = new RequestBuilder().SetEndpoint(UsermanEndpoint);
             req["action"] = "do_reindex";
-            return await Client.QueryObjectAsync<ApiResponse>(req);
+            return await Client.QueryObjectAsync<ApiResponse>(req).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace SynologyDotNet.AudioStation
         {
             var req = new RequestBuilder().SetEndpoint(UsermanEndpoint);
             req["action"] = "load_reindex";
-            return await Client.QueryObjectAsync<ReIndexStateResponse>(req);
+            return await Client.QueryObjectAsync<ReIndexStateResponse>(req).ConfigureAwait(false);
         }
     }
 }

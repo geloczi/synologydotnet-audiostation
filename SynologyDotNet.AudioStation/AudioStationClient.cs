@@ -79,7 +79,7 @@ namespace SynologyDotNet.AudioStation
             args.Add(GetLibraryArg());
             args.Add(("additional", "song_tag,song_audio,song_rating"));
             args.Add(("keyword", keyword));
-            return await Client.QueryObjectAsync<ApiDataResponse<SearchResults>>(SYNO_AudioStation_Search, "list", args.ToArray());
+            return await Client.QueryObjectAsync<ApiDataResponse<SearchResults>>(SYNO_AudioStation_Search, "list", args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace SynologyDotNet.AudioStation
             if (!string.IsNullOrEmpty(folderId))
                 args.Add(("id", folderId));
 
-            return await Client.QueryListAsync<ApiListRessponse<FolderList>>(SYNO_AudioStation_Folder, "list", limit, offset, args.ToArray());
+            return await Client.QueryListAsync<ApiListRessponse<FolderList>>(SYNO_AudioStation_Folder, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
         }
         
         // Use tageditor instead!
