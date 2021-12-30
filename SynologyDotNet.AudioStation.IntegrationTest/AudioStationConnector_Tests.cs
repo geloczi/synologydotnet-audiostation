@@ -18,6 +18,8 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         static AudioStationClient AudioStation;
         static Song TestSong;
         static Playlist TestPlaylist;
+        static string TestArtist;
+        static string TestAlbum;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
@@ -35,29 +37,52 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
             Assert.IsFalse(string.IsNullOrWhiteSpace(session.Token));
             //Assert.AreEqual(SessionName, session.Name);
 
-            UpdateTestSong();
-            UpdateTestPlaylist();
+            LoadTestSong();
+            CreateTestPlaylist();
         }
 
-        // This is not a test method
-        private static void UpdateTestSong()
+        private static void LoadTestSong()
         {
-            var response = AudioStation.ListSongsAsync(1, 0, SongQueryAdditional.All,
-                (SongQueryParameter.artist, Config.TestArtist),
-                (SongQueryParameter.album_artist, Config.TestArtist),
-                (SongQueryParameter.album, Config.TestAlbum)).Result;
-            Assert.AreNotEqual(response.Data.Songs.Length, 0, "Please make sure that your '/music' folder contains music files.");
-            TestSong = response.Data.Songs.First();
+            if (string.IsNullOrEmpty(Config.TestSongTitle))
+            {
+                // Just get the first song
+                var songListResponse = AudioStation.ListSongsAsync(1, 0, SongQueryAdditional.All).Result;
+                Assert.IsTrue(songListResponse.Success);
+                TestSong = songListResponse.Data.Songs.FirstOrDefault();
+            }
+            else
+            {
+                // Search test song by title
+                var searchResponse = AudioStation.SearchSongsByTitleAsync(1, 0, Config.TestSongTitle, SongQueryAdditional.All).Result;
+                Assert.IsTrue(searchResponse.Success);
+                TestSong = searchResponse.Data.Songs.FirstOrDefault();
+            }
+            Assert.IsNotNull(TestSong, "Please make sure that your '/music' folder contains music files.");
+
             AssertSong(TestSong, SongQueryAdditional.All);
+            TestArtist = TestSong.Additional.Tag.Artist;
+            TestAlbum = TestSong.Additional.Tag.Album;
         }
 
-        private static void UpdateTestPlaylist()
+        private static void CreateTestPlaylist()
         {
-            var response = AudioStation.ListPlaylistsAsync(1000, 0).Result;
-            Assert.IsTrue(response.Success);
-            Assert.IsTrue(response.Data.Total > 0, $"Please create a playlist in Audio Station with this name: {Config.TestPlaylistName}");
-            Assert.IsTrue(response.Data.Playlists.Length > 0);
-            TestPlaylist = response.Data.Playlists.First(x => x.Name == Config.TestPlaylistName);
+            var listResponse = AudioStation.ListPlaylistsAsync(10000, 0).Result;
+            Assert.IsTrue(listResponse.Success);
+            TestPlaylist = listResponse.Data.Playlists.FirstOrDefault(x => x.Name.Equals(Config.TestPlaylistName, StringComparison.OrdinalIgnoreCase));
+            if (TestPlaylist is null)
+            {
+                // Create test playlist if does not exist
+                var createResult = AudioStation.CreatePlaylistAsync(Config.TestPlaylistName, false).Result;
+                listResponse = AudioStation.ListPlaylistsAsync(10000, 0).Result;
+                TestPlaylist = listResponse.Data.Playlists.FirstOrDefault(x => x.ID.Equals(createResult.Data.ID, StringComparison.OrdinalIgnoreCase));
+                Assert.IsNotNull(TestPlaylist);
+
+                // Add a few songs to the test playlist
+                var songsResponse = AudioStation.ListSongsAsync(5, 0, SongQueryAdditional.None, (SongQueryParameter.sort_by, SongSortBy.Random)).Result;
+                Assert.IsTrue(songsResponse.Success);
+                var addSongsResponse = AudioStation.AddSongsToPlaylist(TestPlaylist.ID, songsResponse.Data.Songs.Select(x => x.ID).ToArray()).Result;
+                Assert.IsTrue(addSongsResponse.Success);
+            }
         }
 
         [TestMethod]
@@ -176,9 +201,9 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         public async Task Song_FilterByArtistAlbum()
         {
             var response = await AudioStation.ListSongsAsync(TestPageSize, 0, SongQueryAdditional.All,
-                (SongQueryParameter.artist, Config.TestArtist),
-                (SongQueryParameter.album_artist, Config.TestArtist),
-                (SongQueryParameter.album, Config.TestAlbum),
+                (SongQueryParameter.artist, TestArtist),
+                (SongQueryParameter.album_artist, TestArtist),
+                (SongQueryParameter.album, TestAlbum),
                 (SongQueryParameter.sort_by, SongSortBy.Track),
                 (SongQueryParameter.sort_direction, SortDirection.Descending));
             Assert.IsTrue(response.Success);
@@ -194,9 +219,9 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
                 Assert.IsTrue(response.Data.Songs[i - 1].Additional.Tag.Track > response.Data.Songs[i].Additional.Tag.Track);
 
             response = AudioStation.ListSongsAsync(TestPageSize, 0, SongQueryAdditional.All,
-                (SongQueryParameter.artist, Config.TestArtist),
-                (SongQueryParameter.album_artist, Config.TestArtist),
-                (SongQueryParameter.album, Config.TestAlbum),
+                (SongQueryParameter.artist, TestArtist),
+                (SongQueryParameter.album_artist, TestArtist),
+                (SongQueryParameter.album, TestAlbum),
                 (SongQueryParameter.sort_by, SongSortBy.Track),
                 (SongQueryParameter.sort_direction, SortDirection.Ascending)
             ).Result;
@@ -214,10 +239,10 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         public async Task RateSong()
         {
             Assert.IsTrue((await AudioStation.RateSongAsync(TestSong.ID, 4)).Success);
-            UpdateTestSong();
+            LoadTestSong();
             Assert.IsTrue(TestSong.Additional.Rating.Value == 4);
             Assert.IsTrue((await AudioStation.RateSongAsync(TestSong.ID, 5)).Success);
-            UpdateTestSong();
+            LoadTestSong();
             Assert.IsTrue(TestSong.Additional.Rating.Value == 5);
         }
 
@@ -243,7 +268,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         [TestMethod]
         public async Task Artist_GetCover()
         {
-            var response = await AudioStation.GetArtistCoverAsync(Config.TestArtist);
+            var response = await AudioStation.GetArtistCoverAsync(TestArtist);
             Assert.IsFalse(response is null);
             Assert.IsFalse(response.Data is null);
             Assert.IsTrue(response.Data.Length > 0);
@@ -271,7 +296,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         [TestMethod]
         public async Task Album_GetCover()
         {
-            var response = await AudioStation.GetAlbumCoverAsync(Config.TestArtist, Config.TestAlbum);
+            var response = await AudioStation.GetAlbumCoverAsync(TestArtist, TestAlbum);
             Assert.IsFalse(response is null);
             Assert.IsFalse(response.Data is null);
             Assert.IsTrue(response.Data.Length > 5000);
@@ -349,12 +374,12 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         [TestMethod]
         public async Task Search()
         {
-            var response = await AudioStation.SearchAsync(Config.TestArtist);
+            var response = await AudioStation.SearchAsync(TestArtist);
             Assert.IsTrue(response.Success);
             Assert.IsNotNull(response.Data.Artists);
             Assert.IsTrue(response.Data.ArtistTotal > 0);
 
-            response = await AudioStation.SearchAsync(Config.TestAlbum);
+            response = await AudioStation.SearchAsync(TestAlbum);
             Assert.IsNotNull(response.Data.Albums);
             Assert.IsTrue(response.Data.AlbumTotal > 0);
 
@@ -409,6 +434,17 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
             var response = await AudioStation.SearchSongsByTitleAsync(TestPageSize, 0, TestSong.Title, SongQueryAdditional.All);
             Assert.IsTrue(response.Success);
             Assert.IsTrue(response.Data.Songs.Any(x => x.Title.Contains(TestSong.Title, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        [TestMethod]
+        public async Task Playlist_CreateAndDelete()
+        {
+            var createResult = await AudioStation.CreatePlaylistAsync("Playlist_Create_Test1", false);
+            Assert.IsTrue(createResult.Success);
+            Assert.IsFalse(string.IsNullOrWhiteSpace(createResult.Data.ID));
+
+            var deleteResult = await AudioStation.DeletePlaylistAsync(createResult.Data.ID);
+            Assert.IsTrue(deleteResult.Success);
         }
 
         [TestMethod]
@@ -518,6 +554,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
         #region Private Methods
         private static void AssertSong(Song song, SongQueryAdditional additional)
         {
+            Assert.IsNotNull(song);
             Assert.IsFalse(string.IsNullOrWhiteSpace(song.ID));
             Assert.IsFalse(string.IsNullOrWhiteSpace(song.Path));
             Assert.IsFalse(string.IsNullOrWhiteSpace(song.Title));

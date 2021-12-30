@@ -3,23 +3,13 @@
     public class MyConfig
     {
         /// <summary>
-        /// Artist name
-        /// </summary>
-        public string TestArtist { get; set; } = "TestArtist";
-
-        /// <summary>
-        /// Album title
-        /// </summary>
-        public string TestAlbum { get; set; } = "TestAlbum";
-
-        /// <summary>
         /// Song title
         /// </summary>
-        public string TestSongTitle { get; set; } = "TestSong";
+        public string TestSongTitle { get; set; } = string.Empty;
 
         /// <summary>
         /// Playlist name
         /// </summary>
-        public string TestPlaylistName { get; set; } = "TestPlaylist";
+        public string TestPlaylistName { get; set; } = $"{nameof(SynologyDotNet)}_{nameof(AudioStation)}_Test";
     }
 }

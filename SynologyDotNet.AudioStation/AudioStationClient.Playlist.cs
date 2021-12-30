@@ -10,6 +10,34 @@ namespace SynologyDotNet.AudioStation
     public partial class AudioStationClient
     {
         /// <summary>
+        /// Creates a new playlist.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="shared">True if the playlist is shared across all users, False if personal.</param>
+        /// <returns>The ID of the created playlist.</returns>
+        public async Task<ApiDataResponse<Id>> CreatePlaylistAsync(string name, bool shared)
+        {
+            return await Client.QueryObjectAsync<ApiDataResponse<Id>>(
+                SYNO_AudioStation_Playlist, "create",
+                ("name", name),
+                ("library", shared ? Library.Shared : Library.Personal)
+            ).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Deletes a playlist by ID.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        public async Task<ApiResponse> DeletePlaylistAsync(string id)
+        {
+            return await Client.QueryObjectAsync<ApiResponse>(
+                SYNO_AudioStation_Playlist, "delete",
+                ("id", id)
+            ).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Lists the playlists.
         /// </summary>
         /// <param name="limit">The limit.</param>
@@ -17,9 +45,9 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ApiListRessponse<PlaylistList>> ListPlaylistsAsync(int limit, int offset)
         {
-            var result = await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(SYNO_AudioStation_Playlist, "list", limit, offset,
+            return await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(
+                SYNO_AudioStation_Playlist, "list", limit, offset,
                 GetLibraryArg()).ConfigureAwait(false);
-            return result;
         }
 
         /// <summary>
@@ -56,7 +84,9 @@ namespace SynologyDotNet.AudioStation
             var test = await Client.QueryByteArrayAsync(SYNO_AudioStation_Playlist, "getinfo", args.ToArray()).ConfigureAwait(false);
             string json = Encoding.UTF8.GetString(test.Data);
 
-            var playlists = await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(SYNO_AudioStation_Playlist, "getinfo", limit, offset, args.ToArray()).ConfigureAwait(false);
+            var playlists = await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(
+                SYNO_AudioStation_Playlist, "getinfo", limit, offset,
+                args.ToArray()).ConfigureAwait(false);
             return new ApiDataResponse<Playlist>(playlists, playlists.Data?.Playlists?.FirstOrDefault() ?? default);
         }
 
@@ -68,7 +98,8 @@ namespace SynologyDotNet.AudioStation
         /// <returns></returns>
         public async Task<ApiResponse> AddSongsToPlaylist(string id, params string[] songIds)
         {
-            return await Client.QueryObjectAsync<ApiResponse>(SYNO_AudioStation_Playlist, "updatesongs",
+            return await Client.QueryObjectAsync<ApiResponse>(
+                SYNO_AudioStation_Playlist, "updatesongs",
                 ("id", id),
                 ("offset", -1),
                 ("limit", 0),
@@ -85,7 +116,8 @@ namespace SynologyDotNet.AudioStation
         /// <param name="count">The count of songs to be removed from start index.</param>
         public async Task<ApiResponse> RemoveSongsFromPlaylist(string id, int startIndex, int count)
         {
-            return await Client.QueryObjectAsync<ApiResponse>(SYNO_AudioStation_Playlist, "updatesongs",
+            return await Client.QueryObjectAsync<ApiResponse>(
+                SYNO_AudioStation_Playlist, "updatesongs",
                 ("id", id),
                 ("offset", startIndex),
                 ("limit", count),

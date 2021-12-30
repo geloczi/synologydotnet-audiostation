@@ -120,7 +120,20 @@ namespace SynologyDotNet.AudioStation
 
         #region Private Methods
 
-        private (string, string) GetLibraryArg() => ("library", PersonalMusicOnly ? "personal" : "all");
+        private (string, string) GetLibraryArg() => ("library", PersonalMusicOnly ? Library.Personal : Library.All);
+
+        #endregion
+
+        #region Classes
+
+        private static class Library
+        {
+            public const string All = "all";
+
+            public const string Personal = "personal";
+
+            public const string Shared = "shared";
+        }
 
         #endregion
     }
