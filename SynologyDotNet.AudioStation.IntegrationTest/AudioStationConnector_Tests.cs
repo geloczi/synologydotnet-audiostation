@@ -78,7 +78,7 @@ namespace SynologyDotNet.AudioStation.IntegrationTest
                 Assert.IsNotNull(TestPlaylist);
 
                 // Add a few songs to the test playlist
-                var songsResponse = AudioStation.ListSongsAsync(5, 0, SongQueryAdditional.None, (SongQueryParameter.sort_by, SongSortBy.Random)).Result;
+                var songsResponse = AudioStation.ListSongsAsync(5, 0, SongQueryAdditional.None).Result;
                 Assert.IsTrue(songsResponse.Success);
                 var addSongsResponse = AudioStation.AddSongsToPlaylist(TestPlaylist.ID, songsResponse.Data.Songs.Select(x => x.ID).ToArray()).Result;
                 Assert.IsTrue(addSongsResponse.Success);
