@@ -17,7 +17,7 @@ namespace SynologyDotNet.AudioStation
         /// <param name="artist">Filter by artist name</param>
         /// <param name="queryParameters">Filter parameters</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<AlbumList>> ListAlbumsAsync(int limit, int offset, string artist = null, params (AlbumQueryParameter, object)[] queryParameters)
+        public async Task<ApiListResponse<AlbumList>> ListAlbumsAsync(int limit, int offset, string artist = null, params (AlbumQueryParameter, object)[] queryParameters)
         {
             var args = new List<(string, object)>(queryParameters.Select(f => (f.Item1.ToString(), f.Item2)));
             args.Add(GetLibraryArg());
@@ -25,7 +25,7 @@ namespace SynologyDotNet.AudioStation
             if (!string.IsNullOrWhiteSpace(artist))
                 args.Add(("artist", artist));
             
-            return await Client.QueryListAsync<ApiListRessponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
+            return await Client.QueryListAsync<ApiListResponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -49,9 +49,9 @@ namespace SynologyDotNet.AudioStation
         /// <param name="offset">The offset.</param>
         /// <param name="keyword">The keyword.</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<AlbumList>> SearchAlbumsByNameAsync(int limit, int offset, string keyword)
+        public async Task<ApiListResponse<AlbumList>> SearchAlbumsByNameAsync(int limit, int offset, string keyword)
         {
-            return await Client.QueryListAsync<ApiListRessponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset,
+            return await Client.QueryListAsync<ApiListResponse<AlbumList>>(SYNO_AudioStation_Album, "list", limit, offset,
                 GetLibraryArg(),
                 ("additional", "avg_rating"),
                 ("keyword", keyword),

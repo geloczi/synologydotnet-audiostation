@@ -43,9 +43,9 @@ namespace SynologyDotNet.AudioStation
         /// <param name="limit">The limit.</param>
         /// <param name="offset">The offset.</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<PlaylistList>> ListPlaylistsAsync(int limit, int offset)
+        public async Task<ApiListResponse<PlaylistList>> ListPlaylistsAsync(int limit, int offset)
         {
-            return await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(
+            return await Client.QueryListAsync<ApiListResponse<PlaylistList>>(
                 SYNO_AudioStation_Playlist, "list", limit, offset,
                 GetLibraryArg()).ConfigureAwait(false);
         }
@@ -84,7 +84,7 @@ namespace SynologyDotNet.AudioStation
             var test = await Client.QueryByteArrayAsync(SYNO_AudioStation_Playlist, "getinfo", args.ToArray()).ConfigureAwait(false);
             string json = Encoding.UTF8.GetString(test.Data);
 
-            var playlists = await Client.QueryListAsync<ApiListRessponse<PlaylistList>>(
+            var playlists = await Client.QueryListAsync<ApiListResponse<PlaylistList>>(
                 SYNO_AudioStation_Playlist, "getinfo", limit, offset,
                 args.ToArray()).ConfigureAwait(false);
             return new ApiDataResponse<Playlist>(playlists, playlists.Data?.Playlists?.FirstOrDefault() ?? default);
