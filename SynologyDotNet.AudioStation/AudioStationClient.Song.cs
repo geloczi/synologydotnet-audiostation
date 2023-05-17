@@ -21,7 +21,7 @@ namespace SynologyDotNet.AudioStation
         /// <param name="additionalFields">Additional fields to load</param>
         /// <param name="queryParameters">Filter parameters</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<SongList>> ListSongsAsync(int limit, int offset, SongQueryAdditional additionalFields, params (SongQueryParameter, object)[] queryParameters)
+        public async Task<ApiListResponse<SongList>> ListSongsAsync(int limit, int offset, SongQueryAdditional additionalFields, params (SongQueryParameter, object)[] queryParameters)
         {
             var args = new List<(string, object)>(queryParameters.Select(f => (f.Item1.ToString(), f.Item2)));
             args.Add(GetLibraryArg());
@@ -35,7 +35,7 @@ namespace SynologyDotNet.AudioStation
                     .Where(x => additionalFields.HasFlag(x))
                     .Select(x => x.ToString()))));
             }
-            return await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
+            return await Client.QueryListAsync<ApiListResponse<SongList>>(SYNO_AudioStation_Song, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SynologyDotNet.AudioStation
         /// <param name="title">Title to search</param>
         /// <param name="additionalFields">Additional fields to load</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<SongList>> SearchSongsByTitleAsync(int limit, int offset, string title, SongQueryAdditional additionalFields)
+        public async Task<ApiListResponse<SongList>> SearchSongsByTitleAsync(int limit, int offset, string title, SongQueryAdditional additionalFields)
         {
             var args = new List<(string, object)>();
             args.Add(GetLibraryArg());
@@ -62,7 +62,7 @@ namespace SynologyDotNet.AudioStation
                     .Where(x => additionalFields.HasFlag(x))
                     .Select(x => x.ToString()))));
             }
-            return await Client.QueryListAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "search", limit, offset, args.ToArray()).ConfigureAwait(false);
+            return await Client.QueryListAsync<ApiListResponse<SongList>>(SYNO_AudioStation_Song, "search", limit, offset, args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -70,12 +70,12 @@ namespace SynologyDotNet.AudioStation
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<SongList>> GetSongByIdAsync(string id)
+        public async Task<ApiListResponse<SongList>> GetSongByIdAsync(string id)
         {
             var args = new List<(string, object)>();
             args.Add(("id", id));
             args.Add(("additional", "song_tag, song_audio, song_rating")); // request detailed song info
-            return await Client.QueryObjectAsync<ApiListRessponse<SongList>>(SYNO_AudioStation_Song, "getinfo", args.ToArray()).ConfigureAwait(false);
+            return await Client.QueryObjectAsync<ApiListResponse<SongList>>(SYNO_AudioStation_Song, "getinfo", args.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>

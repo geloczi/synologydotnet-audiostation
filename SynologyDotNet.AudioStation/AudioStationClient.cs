@@ -89,14 +89,14 @@ namespace SynologyDotNet.AudioStation
         /// <param name="offset">Start position in the list (use it for paging)</param>
         /// <param name="folderId">Root folder ID, the children directories will be listed in the response. Not recursive.</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<FolderList>> ListFoldersAsync(int limit, int offset, string folderId = null)
+        public async Task<ApiListResponse<FolderList>> ListFoldersAsync(int limit, int offset, string folderId = null)
         {
             var args = new List<(string, object)>();
             args.Add(GetLibraryArg());
             if (!string.IsNullOrEmpty(folderId))
                 args.Add(("id", folderId));
 
-            return await Client.QueryListAsync<ApiListRessponse<FolderList>>(SYNO_AudioStation_Folder, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
+            return await Client.QueryListAsync<ApiListResponse<FolderList>>(SYNO_AudioStation_Folder, "list", limit, offset, args.ToArray()).ConfigureAwait(false);
         }
         
         // Use tageditor instead!

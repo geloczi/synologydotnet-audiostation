@@ -12,9 +12,9 @@ namespace SynologyDotNet.AudioStation
         /// <param name="limit">The limit.</param>
         /// <param name="offset">The offset.</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<ComposerList>> ListComposersAsync(int limit, int offset)
+        public async Task<ApiListResponse<ComposerList>> ListComposersAsync(int limit, int offset)
         {
-            return await Client.QueryListAsync<ApiListRessponse<ComposerList>>(SYNO_AudioStation_Composer, "list", limit, offset, 
+            return await Client.QueryListAsync<ApiListResponse<ComposerList>>(SYNO_AudioStation_Composer, "list", limit, offset, 
                 GetLibraryArg(), 
                 ("additional", "avg_rating"))
                 .ConfigureAwait(false);
@@ -27,9 +27,9 @@ namespace SynologyDotNet.AudioStation
         /// <param name="offset">The offset.</param>
         /// <param name="keyword">The keyword.</param>
         /// <returns></returns>
-        public async Task<ApiListRessponse<ComposerList>> SearchComposersByNameAsync(int limit, int offset, string keyword)
+        public async Task<ApiListResponse<ComposerList>> SearchComposersByNameAsync(int limit, int offset, string keyword)
         {
-            return await Client.QueryListAsync<ApiListRessponse<ComposerList>>(SYNO_AudioStation_Composer, "list", limit, offset,
+            return await Client.QueryListAsync<ApiListResponse<ComposerList>>(SYNO_AudioStation_Composer, "list", limit, offset,
                 GetLibraryArg(),
                 ("additional", "avg_rating"),
                 ("keyword", keyword),
